@@ -9,7 +9,7 @@ import os
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
-def main():
+def send_mail(subject, message):
     creds = None
     # token.pickle contient les jetons d'accès
     if os.path.exists('token.pickle'):
@@ -28,9 +28,9 @@ def main():
 
     service = build('gmail', 'v1', credentials=creds)
 
-    message = MIMEText("Ceci est un email automatique.")
+    message = MIMEText(message)
     message['to'] = "ticketsdata5@gmail.com"
-    message['subject'] = "Test Gmail API"
+    message['subject'] = subject
 
     create_message = {
         'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()
@@ -42,4 +42,4 @@ def main():
     print("Email envoyé :", send_message)
 
 if __name__ == '__main__':
-    main()
+    send_mail(subject, message)
