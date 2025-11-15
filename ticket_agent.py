@@ -2,7 +2,7 @@ from groq import Groq
 from dotenv import load_dotenv
 import random
 import os
-
+import json
 load_dotenv()
 
 def read_file(file_path):
@@ -14,7 +14,7 @@ client = Groq(api_key=os.environ["GROQ_KEY"])
 
 def generate_ticket_mail():
 
-    chat_completion = client.chat.completions.create(
+    response = client.chat.completions.create(
 
         messages=[
             {
@@ -30,10 +30,15 @@ def generate_ticket_mail():
         response_format={"type": "json_object"},
         model="llama-3.3-70b-versatile" if random.randint(0, 1) else "openai/gpt-oss-20b"
     )
+    result = json.loads(response.choices[0].message.content)
 
-    return chat_completion.choices[0].message.content
+    return result
 
 
 if __name__ == "__main__":
     ticket_response = generate_ticket_mail()
-    print(ticket_response)
+    for id_mail, mail in ticket_response.items():
+        print(id_mail)
+        print(mail)
+        print("_"*20)
+
